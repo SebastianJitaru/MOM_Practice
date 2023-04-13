@@ -100,14 +100,36 @@ public class MOM_servant implements MOM_interface{
     public void MsgQ_Publish(String topic, String message, int type) throws EMOMerror, RemoteException {
         for (MessageQueue queue : TopicQueues) {
             if (queue.getName().equals(topic)) { //if broadcast{execute func1}else{execute func2}
-                Message message1 = new Message(type,message);
-                queue.addMessage(message1);
+                if(queue.mode == EPublishMode.BROADCAST){
+                    publishBroadcast(queue,message);
+                }
+                else if(queue.mode == EPublishMode.ROUNDROBIN){
+                    publishRoundRobin(queue,message);
+                }
             }else{
                 throw new EMOMerror("Queue named " + topic + " not found");
             }
         }
         System.out.println("Messagewith string " + message +" added");
 
+    }
+
+    private void publishBroadcast(MessageQueue queue, String message) {
+        for (ClientRMI client: queue.getClients()){
+            client.onTopicMessage(message);
+        }
+    }
+
+    private void publishRoundRobin(MessageQueue queue, String message) {
+        Vector<ClientRMI> clients = new Vector<ClientRMI>(queue.getClients());
+        if (!clients.isEmpty()) { // Check if vector is not empty
+            clients.get(0).onTopicMessage(message); // Use the first element
+            clients.remove(0); // Remove the first element from the copy
+        } else {
+            // Handle case when vector is empty
+            // Example code:
+            System.out.println("Vector is empty");
+        }
     }
 
     @Override

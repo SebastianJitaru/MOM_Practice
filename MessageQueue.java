@@ -35,6 +35,7 @@ public class MessageQueue{
             return messages;
         }
 
+        public Vector<ClientRMI> getClients(){return clients;}
         public Message getMessageFromType(int type){
             for(Message message : messages){
                 if(message.getType() == type){
@@ -44,10 +45,10 @@ public class MessageQueue{
             return null;
         }
 
-    public boolean isEmpty() {
-        synchronized(messages) {
-            return messages.isEmpty();
-        }
+        public boolean isEmpty() {
+            synchronized(messages) {
+                return messages.isEmpty();
+            }
     }
 
 }
