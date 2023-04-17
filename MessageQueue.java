@@ -1,4 +1,10 @@
-
+/* ---------------------------------------------------------------
+Práctica 1.
+Código fuente: MessageQueue.java
+Grau Informàtica
+Y1051960T Sebastian Jitaru.
+04345214P Gabriel Daniel Bogdan Micu.
+--------------------------------------------------------------- */
 import java.util.Vector;
 
 public class MessageQueue{

@@ -1,3 +1,10 @@
+/* ---------------------------------------------------------------
+Práctica 1.
+Código fuente: MOMServer.java
+Grau Informàtica
+Y1051960T Sebastian Jitaru.
+04345214P Gabriel Daniel Bogdan Micu.
+--------------------------------------------------------------- */
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;

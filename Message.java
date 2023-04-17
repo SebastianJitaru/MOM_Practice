@@ -1,4 +1,11 @@
 
+/* ---------------------------------------------------------------
+Práctica 1.
+Código fuente: Message.java
+Grau Informàtica
+Y1051960T Sebastian Jitaru.
+04345214P Gabriel Daniel Bogdan Micu.
+--------------------------------------------------------------- */
 public class Message {
     private int type;
     private String message;

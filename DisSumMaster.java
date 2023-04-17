@@ -1,11 +1,19 @@
-
+/* ---------------------------------------------------------------
+Práctica 1.
+Código fuente: DisSumMaster.java
+Grau Informàtica
+Y1051960T Sebastian Jitaru.
+04345214P Gabriel Daniel Bogdan Micu.
+--------------------------------------------------------------- */
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.Vector;
 
 public class DisSumMaster {
     private static MOM_interface server;
+
     public DisSumMaster()throws RemoteException{}
     public static void main(String args[]) throws EMOMerror {
         if (args.length < 2) {
@@ -26,16 +34,13 @@ public class DisSumMaster {
             Remote remoteService = Naming.lookup(registration);
             server = (MOM_interface) remoteService;
 // Crear las colas Result y Work
-            System.out.println("XIVATO1");
-            server.printHello();
             server.MsgQ_CreateQueue("Results");
-            System.out.println("XIVATO1.2");
-            server.MsgQ_CreateTopic("Work", EPublishMode.ROUNDROBIN);
+            //server.MsgQ_CreateTopic("Work", EPublishMode.ROUNDROBIN);
 // Publicar mensajes a la cola Work
             publishMessages(begin, end, numProcesses, intervalSize);
 // Recibir mensajes de la cola Result
-
             recieveMessages(numProcesses);
+            closeQueues();
         } catch (NotBoundException nbe) {
             System.out.println("No sensors available");
         } catch (RemoteException re) {
@@ -45,15 +50,26 @@ public class DisSumMaster {
         }
     }
 
-    private static void recieveMessages(int numProcesses) {
+    private static void closeQueues() throws EMOMerror, RemoteException {
+        server.MsgQ_CloseTopic("Work");
+        server.MsgQ_CloseQueue("Results");
+    }
+
+    private static void recieveMessages(int numProcesses) throws EMOMerror, RemoteException, InterruptedException {
         long totalSum = 0;
-        for (int i = 0; i < numProcesses; i++) {
-            try {
-                String message = server.MsgQ_ReceiveMessage("Results",0);
+        int count = 0;
+        while(true){
+            Thread.sleep(3000);
+            String message = server.MsgQ_ReceiveMessage("Results",0);
+            if (message == null){
+                System.out.println("DEBUG -> Null message recieved ");
+            }else{
+                System.out.println("DEBUG -> Message:" + message +" recieved");
                 totalSum += Integer.parseInt(message);
-            } catch (Exception e) {
-                e.printStackTrace();
+                count++;
             }
+            if(count == numProcesses){break;}
+
         }
         System.out.println("Sum result is : "+totalSum);
     }
